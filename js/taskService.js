@@ -44,3 +44,48 @@ function addTask(input) {
   saveTasks(tasks);
   return { ok: true, task: task };
 }
+
+// F02 할 일 수정
+function updateTask(id, changes) {
+  const task = findTask(id);
+  if (!task) return { ok: false, message: '해당 할 일을 찾을 수 없습니다.' };
+  const title = String(changes.title || '').trim();
+  if (title === '') return { ok: false, message: '할 일 제목을 입력하세요.' };
+  Object.assign(task, { title: title, priority: changes.priority, category: changes.category,
+    startDate: changes.startDate, dueDate: changes.dueDate, memo: changes.memo }, {
+    subtasks: makeSubtasks(changes.subtasks, task.subtasks),
+    updatedAt: new Date().toISOString()
+  });
+  saveTasks(tasks);
+  return { ok: true, task: task };
+}
+
+// F03 할 일 삭제
+function deleteTask(id) {
+  const before = tasks.length;
+  tasks = tasks.filter(function (t) { return t.id !== id; });
+  saveTasks(tasks);
+  return { ok: tasks.length < before };
+}
+
+// F04 완료 / 미완료 전환
+function toggleTask(id) {
+  const task = findTask(id);
+  if (!task) return { ok: false };
+  task.completed = !task.completed;
+  task.updatedAt = new Date().toISOString();
+  saveTasks(tasks);
+  return { ok: true, task: task };
+}
+
+// F07 세부 할 일 완료 / 취소 전환
+function toggleSubtask(id, subId) {
+  const task = findTask(id);
+  const sub = task && task.subtasks.find(function (s) { return s.id === subId; });
+  if (!sub) return { ok: false };
+  sub.done = !sub.done;
+  task.updatedAt = new Date().toISOString();
+  saveTasks(tasks);
+  return { ok: true, task: task };
+}
+
