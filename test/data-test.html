@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>TaskMate 데이터 확인 (개발용)</title>
+  <style>
+    body { font-family: "Malgun Gothic", sans-serif; margin: 40px; color: #1f2a44; }
+    li { margin: 10px 0; }
+    code { background: #f1f4f9; padding: 2px 6px; }
+    .ok { color: #2f9e6e; } .fail { color: #d64545; }
+  </style>
+</head>
+<body>
+  <h1>TaskMate 데이터 확인 (개발용)</h1>
+  <p>할 일 1개를 저장했다가 다시 불러와 봅니다. 확인이 끝나면 저장값은 원래대로 돌려 놓습니다.</p>
+  <ul id="out"></ul>
+
+  <script src="../js/storage.js"></script>
+  <script src="../js/taskService.js"></script>
+  <script>
+    const out = document.getElementById('out');
+    function line(label, value, ok) {
+      const li = document.createElement('li');
+      li.innerHTML = label + ': <code></code> ' + (ok ? '<b class="ok">통과</b>' : '<b class="fail">실패</b>');
+      li.querySelector('code').textContent = value;
+      out.appendChild(li);
+    }
+    function isJson(text) {
+      try { JSON.parse(text); return true; } catch (e) { return false; }
+    }
+    const backup = localStorage.getItem(STORAGE_KEY);
+    const before = loadTasks().length;
+    const result = addTask({ title: '확인용 할 일' });
+    const raw = localStorage.getItem(STORAGE_KEY);
+    const reloaded = loadTasks();
+    line('1. 추가 결과', String(result.ok), result.ok === true);
+    line('2. LocalStorage에 저장된 값', raw.length > 60 ? raw.slice(0, 60) + '…' : raw, isJson(raw));
+    line('3. 다시 불러온 개수 (추가 전 ' + before + '개)', reloaded.length + '개', reloaded.length === before + 1);
+    if (backup === null) localStorage.removeItem(STORAGE_KEY); else localStorage.setItem(STORAGE_KEY, backup);
+  </script>
+</body>
+</html>
