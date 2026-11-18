@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TaskMate</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="app">
+    <h1 class="app-title">TaskMate 월별 TO-DO</h1>
+
+    <!-- 보드: 칸(열)마다 카드가 들어간다 -->
+    <section id="board" class="board"></section>
+  </main>
+
+  <!-- 할 일 입력 창 (새 페이지 / 카드 제목을 누르면 열림) -->
+  <div id="modal" class="modal" hidden>
+    <form id="task-form" class="modal-box" novalidate>
+      <h2 id="form-title">새 할 일</h2>
+      <label>제목
+        <input id="title-input" type="text" placeholder="예: 자료구조 과제 제출">
+      </label>
+      <div class="row">
+        <label>중요도
+          <select id="priority-input">
+            <option value="urgent">긴급</option>
+            <option value="important">중요</option>
+            <option value="none">우선순위 없음</option>
+            <option value="later">나중</option>
+          </select>
+        </label>
+        <label>분류
+          <select id="category-input">
+            <option value="study">공부</option>
+            <option value="personal">개인</option>
+            <option value="family">가족</option>
+            <option value="other">기타</option>
+          </select>
+        </label>
+      </div>
+      <label>메모 (함께하는 사람, 장소 등)
+        <input id="memo-input" type="text" placeholder="예: 조원 3명, 도서관">
+      </label>
+      <div class="row">
+        <label>시작일 (선택)
+          <input id="start-input" type="date">
+        </label>
+        <label>마감일
+          <input id="due-input" type="date">
+        </label>
+      </div>
+      <label>세부 할 일 (한 줄에 하나씩)
+        <textarea id="subtasks-input" rows="4" placeholder="자료 조사&#10;초안 쓰기&#10;제출하기"></textarea>
+      </label>
+      <p id="form-error" class="form-error" role="alert"></p>
+      <div class="modal-actions">
+        <button type="button" id="delete-btn" class="btn-danger" hidden>삭제</button>
+        <button type="button" id="cancel-btn" class="btn-plain">취소</button>
+        <button type="submit" id="submit-btn" class="btn-primary">추가</button>
+      </div>
+    </form>
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/taskService.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
