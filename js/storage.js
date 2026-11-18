@@ -18,5 +18,6 @@ function loadTasks() {
 
 // 목록 전체를 저장한다.
 function saveTasks(tasks) {
-  localStorage.setItem(STORAGE_KEY, tasks);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+  
 }
