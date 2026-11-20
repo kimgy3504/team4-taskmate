@@ -1,4 +1,4 @@
-// ui.js — 담당: 팀원 B (Issue #5)
+// ui.js — 담당: 팀원 B (Issue #5, #6)
 // 보드 화면 그리기, 카드·버튼 클릭 처리, 입력 창 열고 닫기를 맡는다.
 // 데이터는 taskService.js 함수로만 바꾸고, 바뀌면 render()로 다시 그린다.
 
@@ -77,8 +77,12 @@ function makeColumn(col) {
 function render() {
   const board = document.getElementById('board');
   board.innerHTML = '';
-  const columns = [{ key: 'all', label: '전체 할 일', tasks: getTasks() }]; // 보기 탭은 Issue #6에서 추가
+  const columns = groupTasks(getTasks(), view.mode);
   columns.forEach(function (col) { board.appendChild(makeColumn(col)); });
+  // 지금 보고 있는 탭 강조
+  document.querySelectorAll('.view-tabs button').forEach(function (btn) {
+    btn.classList.toggle('active', btn.dataset.mode === view.mode);
+  });
 }
 
 // 입력 창 열기: task가 있으면 수정, 없으면 새로 만들기 (preset = 칸에 맞는 기본값)
@@ -163,5 +167,13 @@ function bindEvents() {
     } else if (target.classList.contains('card-title')) {
       openForm(findTask(id));
     }
+  });
+
+  // 보기 탭: 분류별 / 중요도별 / 완료
+  document.querySelectorAll('.view-tabs button').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      view.mode = btn.dataset.mode;
+      render();
+    });
   });
 }
