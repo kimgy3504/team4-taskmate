@@ -113,3 +113,7 @@ function toggleSubtask(id, subId) {
   return { ok: true, task: task };
 }
 
+// F08 마감일이 지난 미완료 항목인지 확인 (today 형식: YYYY-MM-DD)
+function isOverdue(task, today) {
+  return !task.completed && task.dueDate !== '' && task.dueDate < today;
+}
