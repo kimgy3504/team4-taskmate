@@ -10,6 +10,13 @@
   <main class="app">
     <h1 class="app-title">TaskMate 월별 TO-DO</h1>
 
+    <!-- 보기 탭 (F05, F10) -->
+    <nav class="view-tabs">
+      <button type="button" data-mode="category">▥ 분류별</button>
+      <button type="button" data-mode="priority" class="active">▥ 중요도별</button>
+      <button type="button" data-mode="done">▥ 완료</button>
+    </nav>
+
     <!-- 보드: 칸(열)마다 카드가 들어간다 -->
     <section id="board" class="board"></section>
   </main>
@@ -62,8 +69,10 @@
     </form>
   </div>
 
+  <!-- 순서 중요: 저장 → 데이터 → 칸 나누기·진행률 → 화면 → 시작 -->
   <script src="js/storage.js"></script>
   <script src="js/taskService.js"></script>
+  <script src="js/filters.js"></script>
   <script src="js/ui.js"></script>
   <script src="js/main.js"></script>
 </body>
