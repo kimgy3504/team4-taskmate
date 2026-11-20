@@ -1,6 +1,8 @@
-// taskService.js — 담당: 팀원 A (Issue #2)
-// 할 일 데이터의 추가·조회·수정·삭제(CRUD)를 맡는다.
+// taskService.js — 담당: 팀원 A (Issue #2, #3)
+// 할 일 데이터의 추가·조회·수정·삭제(CRUD)와 입력값 검증을 맡는다.
 // 화면(ui.js)은 이 파일의 함수만 호출하고, 데이터를 직접 고치지 않는다.
+
+const MAX_TITLE = 80;
 
 let tasks = loadTasks();
 
@@ -12,6 +14,16 @@ function getTasks() {
 // id로 할 일 하나 찾기 (없으면 undefined)
 function findTask(id) {
   return tasks.find(function (t) { return t.id === id; });
+}
+
+// 제목 검증: 앞뒤 공백 제거, 빈 값 금지, 80자 제한
+function validateTitle(title) {
+  const value = String(title || '').trim();
+  if (value === '') return { ok: false, message: '할 일 제목을 입력하세요.' };
+  if (value.length > MAX_TITLE) {
+    return { ok: false, message: '제목은 80자까지 입력할 수 있습니다.' };
+  }
+  return { ok: true, value: value };
 }
 
 function makeId() {
@@ -31,11 +43,11 @@ function makeSubtasks(lines, old) {
 
 // F01 할 일 추가
 function addTask(input) {
-  const title = String(input.title || '').trim();
-  if (title === '') return { ok: false, message: '할 일 제목을 입력하세요.' };
+  const check = validateTitle(input.title);
+  if (!check.ok) return check;
   const now = new Date().toISOString();
   const task = Object.assign(
-    { id: makeId(), title: title, completed: false },
+    { id: makeId(), title: check.value, completed: false },
     { priority: input.priority || 'none', category: input.category || 'personal',
       startDate: input.startDate || '', dueDate: input.dueDate || '', memo: input.memo || '' },
     { subtasks: makeSubtasks(input.subtasks), createdAt: now, updatedAt: now }
@@ -49,9 +61,9 @@ function addTask(input) {
 function updateTask(id, changes) {
   const task = findTask(id);
   if (!task) return { ok: false, message: '해당 할 일을 찾을 수 없습니다.' };
-  const title = String(changes.title || '').trim();
-  if (title === '') return { ok: false, message: '할 일 제목을 입력하세요.' };
-  Object.assign(task, { title: title, priority: changes.priority, category: changes.category,
+  const check = validateTitle(changes.title);
+  if (!check.ok) return check;
+  Object.assign(task, { title: check.value, priority: changes.priority, category: changes.category,
     startDate: changes.startDate, dueDate: changes.dueDate, memo: changes.memo }, {
     subtasks: makeSubtasks(changes.subtasks, task.subtasks),
     updatedAt: new Date().toISOString()
