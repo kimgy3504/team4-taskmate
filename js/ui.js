@@ -20,6 +20,13 @@ function fmtDate(value) {
   return value.split('-').join('/');
 }
 
+// 오늘 날짜를 2026-01-28 형태로
+function todayString() {
+  const d = new Date();
+  const two = function (n) { return String(n).padStart(2, '0'); };
+  return d.getFullYear() + '-' + two(d.getMonth() + 1) + '-' + two(d.getDate());
+}
+
 // 카드 하나 만들기
 function makeCard(task) {
   const card = el('article', 'card' + (task.completed ? ' done' : ''));
@@ -31,7 +38,8 @@ function makeCard(task) {
   // 날짜: 시작일이 있으면 「시작 → 마감」
   if (task.dueDate) {
     const text = (task.startDate ? fmtDate(task.startDate) + ' → ' : '') + fmtDate(task.dueDate);
-    card.appendChild(el('p', 'card-date', text));
+    const late = isOverdue(task, todayString());
+    card.appendChild(el('p', 'card-date' + (late ? ' overdue' : ''), text + (late ? ' · 기한 지남' : '')));
   }
 
   // 진행률 막대 (세부 할 일 기준)
