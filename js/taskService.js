@@ -1,7 +1,9 @@
-// taskService.js — 담당: 팀원 A (Issue #2, #3)
+// taskService.js — 담당: 팀원 A (Issue #2, #3, #4)
 // 할 일 데이터의 추가·조회·수정·삭제(CRUD)와 입력값 검증을 맡는다.
 // 화면(ui.js)은 이 파일의 함수만 호출하고, 데이터를 직접 고치지 않는다.
 
+const PRIORITIES = ['urgent', 'important', 'none', 'later'];
+const CATEGORIES = ['study', 'personal', 'family', 'other'];
 const MAX_TITLE = 80;
 
 let tasks = loadTasks();
@@ -26,6 +28,18 @@ function validateTitle(title) {
   return { ok: true, value: value };
 }
 
+// 중요도·분류·날짜·메모를 정해진 값으로 맞춘다. (Issue #4)
+function normalizeMeta(input) {
+  const date = /^\d{4}-\d{2}-\d{2}$/;
+  return {
+    priority: PRIORITIES.includes(input.priority) ? input.priority : 'none',
+    category: CATEGORIES.includes(input.category) ? input.category : 'personal',
+    startDate: date.test(input.startDate || '') ? input.startDate : '',
+    dueDate: date.test(input.dueDate || '') ? input.dueDate : '',
+    memo: String(input.memo || '').trim()
+  };
+}
+
 function makeId() {
   return 'task-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 }
@@ -48,8 +62,7 @@ function addTask(input) {
   const now = new Date().toISOString();
   const task = Object.assign(
     { id: makeId(), title: check.value, completed: false },
-    { priority: input.priority || 'none', category: input.category || 'personal',
-      startDate: input.startDate || '', dueDate: input.dueDate || '', memo: input.memo || '' },
+    normalizeMeta(input),
     { subtasks: makeSubtasks(input.subtasks), createdAt: now, updatedAt: now }
   );
   tasks.push(task);
@@ -63,8 +76,7 @@ function updateTask(id, changes) {
   if (!task) return { ok: false, message: '해당 할 일을 찾을 수 없습니다.' };
   const check = validateTitle(changes.title);
   if (!check.ok) return check;
-  Object.assign(task, { title: check.value, priority: changes.priority, category: changes.category,
-    startDate: changes.startDate, dueDate: changes.dueDate, memo: changes.memo }, {
+  Object.assign(task, { title: check.value }, normalizeMeta(changes), {
     subtasks: makeSubtasks(changes.subtasks, task.subtasks),
     updatedAt: new Date().toISOString()
   });
@@ -101,3 +113,7 @@ function toggleSubtask(id, subId) {
   return { ok: true, task: task };
 }
 
+// F08 마감일이 지난 미완료 항목인지 확인 (today 형식: YYYY-MM-DD)
+function isOverdue(task, today) {
+  return !task.completed && task.dueDate !== '' && task.dueDate < today;
+}
