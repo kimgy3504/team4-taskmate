@@ -1,4 +1,4 @@
-// ui.js — 담당: 팀원 B (Issue #5, #6)
+// ui.js — 담당: 팀원 B (Issue #5, #6, #7)
 // 보드 화면 그리기, 카드·버튼 클릭 처리, 입력 창 열고 닫기를 맡는다.
 // 데이터는 taskService.js 함수로만 바꾸고, 바뀌면 render()로 다시 그린다.
 
@@ -20,6 +20,13 @@ function fmtDate(value) {
   return value.split('-').join('/');
 }
 
+// 오늘 날짜를 2026-01-28 형태로
+function todayString() {
+  const d = new Date();
+  const two = function (n) { return String(n).padStart(2, '0'); };
+  return d.getFullYear() + '-' + two(d.getMonth() + 1) + '-' + two(d.getDate());
+}
+
 // 카드 하나 만들기
 function makeCard(task) {
   const card = el('article', 'card' + (task.completed ? ' done' : ''));
@@ -31,7 +38,23 @@ function makeCard(task) {
   // 날짜: 시작일이 있으면 「시작 → 마감」
   if (task.dueDate) {
     const text = (task.startDate ? fmtDate(task.startDate) + ' → ' : '') + fmtDate(task.dueDate);
-    card.appendChild(el('p', 'card-date', text));
+    const late = isOverdue(task, todayString());
+    card.appendChild(el('p', 'card-date' + (late ? ' overdue' : ''), text + (late ? ' · 기한 지남' : '')));
+  }
+
+  // 진행률 막대 (세부 할 일 기준)
+  const p = calcProgress(task);
+  if (p.total === 0) {
+    card.appendChild(el('p', 'card-progress-none', '진행률 없음'));
+  } else {
+    const row = el('div', 'card-progress');
+    const bar = el('div', 'bar');
+    const fill = el('div', 'bar-fill');
+    fill.style.width = p.percent + '%';
+    bar.appendChild(fill);
+    row.appendChild(bar);
+    row.appendChild(el('span', 'bar-text', p.percent + '%'));
+    card.appendChild(row);
   }
 
   // 세부 할 일: 누르면 끝냄/취소 (끝낸 것은 취소선)
