@@ -8,4 +8,3 @@ function calcProgress(task) {
   const percent = total === 0 ? 0 : Math.round((done / total) * 100);
   return { done: done, total: total, percent: percent };
 }
-
