@@ -28,4 +28,4 @@
 | 이름 | 역할 | 담당 파일 |
 |---|---|---|
 | 김가령 | 데이터·핵심 기능 | js/taskService.js, js/storage.js |
-| (팀원 B 이름) | 화면·사용자 기능 | index.html, css/style.css, js/ui.js, js/filters.js, js/progress.js |
+| 신하윤 | 화면·사용자 기능 | index.html, css/style.css, js/ui.js, js/filters.js, js/progress.js |
