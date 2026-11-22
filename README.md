@@ -22,7 +22,7 @@
 
 ## 사용한 기술과 오픈소스
 - HTML, CSS, JavaScript, LocalStorage, Git, GitHub, VS Code
-- 외부 라이브러리 없이 작성 (사용했다면 이름과 링크를 여기에 적기)
+- 외부 라이브러리 없이 작성 
 
 ## 팀원 및 역할
 | 이름 | 역할 | 담당 파일 |
