@@ -17,7 +17,7 @@
 ![실행 화면](assets/images/screen1.png)
 
 ## 실행 방법
-- 배포 주소: https://<팀장아이디>.github.io/<저장소이름>/
+- 배포 주소: https://kimgy3504.github.io/team4-taskmate/
 - 또는 저장소를 내려받아 index.html을 브라우저로 열기
 
 ## 사용한 기술과 오픈소스
